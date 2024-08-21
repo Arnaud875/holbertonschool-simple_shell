@@ -9,6 +9,11 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+/**
+ * struct Command - A structure of builtins functions
+ * @name: Name of builtins function
+ * @execute: A pointer to builtins function
+ */
 struct Command
 {
 	char *name;
