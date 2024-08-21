@@ -1,6 +1,6 @@
 #include "main.h"
 
-static int __exit_status__ = 0;
+static int __exit_status__;
 
 /**
  * set_exit_status - Set exit status code
