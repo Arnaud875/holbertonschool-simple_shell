@@ -53,41 +53,6 @@ char *find_executable_path(char *executable)
 }
 
 /**
- * multiple_execute - Execute multiple function
- * @tokens: A tokens list
- * Return: Status code of child process
- */
-int multiple_execute(char **tokens)
-{
-	size_t i = 0;
-	char *executable_path;
-	char *exec_tokens[] = {NULL, NULL};
-
-	for (; tokens[i]; i++)
-	{
-		executable_path = get_executable_path(tokens[i]);
-		if (executable_path)
-		{
-			exec_tokens[0] = executable_path;
-			if (run_process_command(executable_path, exec_tokens) == -1)
-			{
-				free(executable_path);
-				return (-1);
-			}
-		}
-		else
-		{
-			free(executable_path);
-			return (-1);
-		}
-
-		free(executable_path);
-	}
-
-	return (0);
-}
-
-/**
  * execute_command - Check if command exists or builtins and execute
  * @tokens: A tokens list
  * Return: Exit code of child process or 0 if is builtins function
@@ -95,7 +60,7 @@ int multiple_execute(char **tokens)
 int execute_command(char **tokens)
 {
 	int status;
-	char *executable_path, *possible_executable;
+	char *executable_path;
 
 	if (!tokens[0])
 		return (-1);
@@ -103,22 +68,16 @@ int execute_command(char **tokens)
 	executable_path = find_executable_path(strdup(tokens[0]));
 	if (!executable_path)
 	{
-		fprintf(stderr, "%s: No such file or directory\n",
-				get_shell_instance()->file_name);
+		if (get_shell_instance()->is_interactive)
+			fprintf(stderr, "%s: No such file or directory\n",
+					get_shell_instance()->file_name);
+		else
+			fprintf(stderr, "%s: 1: %s: not found\n",
+					get_shell_instance()->file_name, executable_path);
+
 		free(executable_path);
 		get_shell_instance()->exit_code = 127;
 		return (-1);
-	}
-
-	if (tokens[1] != NULL)
-	{
-		possible_executable = find_executable_path(strdup(tokens[1]));
-		if (possible_executable)
-		{
-			free(possible_executable);
-			free(executable_path);
-			return (multiple_execute(tokens));
-		}
 	}
 
 	status = run_process_command(executable_path, tokens);
