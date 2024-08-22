@@ -32,6 +32,11 @@ static int run_process_command(const char *executable_path, char **tokens)
 	return (0);
 }
 
+/**
+ * find_executable_path - Get executable path by name
+ * @executable: Executable name of path
+ * Return: Path of executable or executable argument
+ */
 char *find_executable_path(char *executable)
 {
 	char *temp;
@@ -46,6 +51,11 @@ char *find_executable_path(char *executable)
 	return (executable);
 }
 
+/**
+ * multiple_execute - Execute multiple function
+ * @tokens: A tokens list
+ * Return: Status code of child process
+ */
 int multiple_execute(char **tokens)
 {
 	size_t i = 0;
