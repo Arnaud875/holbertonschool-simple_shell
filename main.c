@@ -7,10 +7,6 @@
 void handle_sigint(int sig)
 {
 	(void)sig;
-
-	if (get_shell_instance()->user_input)
-		free(get_shell_instance()->user_input);
-	exit(get_shell_instance()->exit_code);
 }
 
 /**
