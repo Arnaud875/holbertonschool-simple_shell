@@ -18,6 +18,7 @@ static int run_process_command(const char *executable_path, char **tokens)
 	if (process == 0)
 	{
 		execve(executable_path, tokens, __environ);
+		perror("Error execute in child process");
 		exit(EXIT_FAILURE);
 	}
 	else

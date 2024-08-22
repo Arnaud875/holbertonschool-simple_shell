@@ -42,7 +42,7 @@ char **make_tokens(char *input)
 		if (!tokens[j])
 		{
 			free_all(tokens);
-			shell_exit(-1);
+			shell_exit(EXIT_FAILURE);
 		}
 
 		strcpy(tokens[j], token);

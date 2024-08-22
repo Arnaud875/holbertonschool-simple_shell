@@ -29,6 +29,9 @@ int shell_exit(int code)
 	if (get_shell_instance()->tokens)
 		free_all(get_shell_instance()->tokens);
 
+	if (code == EXIT_FAILURE)
+		perror("Error in execution.");
+
 	exit(code);
 }
 
@@ -45,7 +48,7 @@ static int cd(char *arg)
 	{
 		buffer = getcwd(NULL, 0);
 		if (!buffer)
-			shell_exit(-1);
+			shell_exit(EXIT_FAILURE);
 
 		arg = buffer;
 	}
