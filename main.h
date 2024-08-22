@@ -22,6 +22,7 @@ typedef struct BuiltinCommand
 
 /**
  * struct Shell - A structure of shell
+ * @file_name: Name of program
  * @user_input: A buffer to stock stdin string
  * @tokens: Split user_input with delimiter
  * @exit_code: Exit code of shell
@@ -29,6 +30,7 @@ typedef struct BuiltinCommand
  */
 typedef struct Shell
 {
+	char *file_name;
 	char *user_input;
 	char **tokens;
 	int exit_code;
@@ -41,7 +43,7 @@ char *get_executable_path(char *executable);
 char **make_tokens(char *input);
 void free_all(char **array);
 
-int execute_command(const char *file_name, char **tokens);
+int execute_command(char **tokens);
 
 Shell_t *get_shell_instance(void);
 int shell_exit(int code);

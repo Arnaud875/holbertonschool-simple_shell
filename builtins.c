@@ -3,6 +3,7 @@
 static Shell_t shell_instance = {
 	NULL,
 	NULL,
+	NULL,
 	0,
 	0,
 };
@@ -54,7 +55,8 @@ static int cd(char *arg)
 		if (buffer)
 			free(buffer);
 
-		shell_exit(-1);
+		get_shell_instance()->exit_code = 2;
+		return (1);
 	}
 
 	if (buffer)

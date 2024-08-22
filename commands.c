@@ -64,11 +64,15 @@ int multiple_execute(char **tokens)
 
 	for (; tokens[i]; i++)
 	{
-		executable_path = get_executable_path(strdup(tokens[i]));
+		executable_path = get_executable_path(tokens[i]);
 		if (executable_path)
 		{
 			exec_tokens[0] = executable_path;
-			run_process_command(executable_path, exec_tokens);
+			if (run_process_command(executable_path, exec_tokens) == -1)
+			{
+				free(executable_path);
+				return (-1);
+			}
 		}
 		else
 		{
@@ -84,11 +88,10 @@ int multiple_execute(char **tokens)
 
 /**
  * execute_command - Check if command exists or builtins and execute
- * @file_name: Name of program
  * @tokens: A tokens list
  * Return: Exit code of child process or 0 if is builtins function
  */
-int execute_command(const char *file_name, char **tokens)
+int execute_command(char **tokens)
 {
 	int status;
 	char *executable_path, *possible_executable;
@@ -99,7 +102,8 @@ int execute_command(const char *file_name, char **tokens)
 	executable_path = find_executable_path(strdup(tokens[0]));
 	if (!executable_path)
 	{
-		fprintf(stderr, "%s: No such file or directory\n", file_name);
+		fprintf(stderr, "%s: No such file or directory\n",
+				get_shell_instance()->file_name);
 		free(executable_path);
 		get_shell_instance()->exit_code = 127;
 		return (-1);
