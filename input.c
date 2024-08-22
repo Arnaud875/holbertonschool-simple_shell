@@ -20,6 +20,9 @@ char *input()
 		if (buffer)
 			free(buffer);
 
+		if (feof(stdin))
+			exit(get_shell_instance()->exit_code);
+
 		if (!get_shell_instance()->is_interactive)
 			exit(get_shell_instance()->exit_code);
 

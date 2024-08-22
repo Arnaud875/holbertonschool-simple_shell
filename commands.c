@@ -32,6 +32,46 @@ static int run_process_command(const char *executable_path, char **tokens)
 	return (0);
 }
 
+char *find_executable_path(char *executable)
+{
+	char *temp;
+
+	if (access(executable, F_OK) != 0)
+	{
+		temp = get_executable_path(executable);
+		free(executable);
+		executable = temp;
+	}
+
+	return (executable);
+}
+
+int multiple_execute(char **tokens)
+{
+	size_t i = 0;
+	char *executable_path;
+	char *exec_tokens[] = {NULL, NULL};
+
+	for (; tokens[i]; i++)
+	{
+		executable_path = get_executable_path(strdup(tokens[i]));
+		if (executable_path)
+		{
+			exec_tokens[0] = executable_path;
+			run_process_command(executable_path, exec_tokens);
+		}
+		else
+		{
+			free(executable_path);
+			return (-1);
+		}
+
+		free(executable_path);
+	}
+
+	return (0);
+}
+
 /**
  * execute_command - Check if command exists or builtins and execute
  * @file_name: Name of program
@@ -41,27 +81,29 @@ static int run_process_command(const char *executable_path, char **tokens)
 int execute_command(const char *file_name, char **tokens)
 {
 	int status;
-	char *executable_path, *temp;
+	char *executable_path, *possible_executable;
 
 	if (!tokens[0])
 		return (-1);
 
-	executable_path = strdup(tokens[0]);
-
-	if (access(executable_path, F_OK) != 0)
-	{
-		temp = get_executable_path(executable_path);
-		free(executable_path);
-		executable_path = temp;
-	}
-
+	executable_path = find_executable_path(strdup(tokens[0]));
 	if (!executable_path)
 	{
 		fprintf(stderr, "%s: No such file or directory\n", file_name);
 		free(executable_path);
-
 		get_shell_instance()->exit_code = 127;
 		return (-1);
+	}
+
+	if (tokens[1] != NULL)
+	{
+		possible_executable = find_executable_path(strdup(tokens[1]));
+		if (possible_executable)
+		{
+			free(possible_executable);
+			free(executable_path);
+			return (multiple_execute(tokens));
+		}
 	}
 
 	status = run_process_command(executable_path, tokens);

@@ -1,6 +1,19 @@
 #include "main.h"
 
 /**
+ * handle_sigint - Intercept signal (Ctrl+C)
+ * @sig: Signal code
+ */
+void handle_sigint(int sig)
+{
+	(void)sig;
+
+	if (get_shell_instance()->user_input)
+		free(get_shell_instance()->user_input);
+	exit(get_shell_instance()->exit_code);
+}
+
+/**
  * main - Enter fonction of simple shell
  * @argc: Number of arguments
  * @argv: Program arguments
@@ -9,6 +22,7 @@
 int main(__attribute__((unused)) int argc, char **argv)
 {
 	get_shell_instance()->is_interactive = isatty(STDIN_FILENO);
+	signal(SIGINT, handle_sigint);
 
 	while (1)
 	{
