@@ -1,25 +1,34 @@
 #include "main.h"
 
-static int __exit_status__;
+static Shell_t shell_instance = {
+	NULL,
+	NULL,
+	0,
+	0,
+};
 
 /**
- * set_exit_status - Set exit status code
- * @code: Exit code
+ * get_shell_instance - Get shell instance
+ * Return: shell instance
  */
-void set_exit_status(int code)
+Shell_t *get_shell_instance(void)
 {
-	__exit_status__ = code;
+	return (&shell_instance);
 }
 
 /**
- * aexit - Exit process
- * @arg: Exit status code
+ * shell_exit - Exit process and free shell
+ * @code: Exit code
  * Return: 1
  */
-static int aexit(void *arg)
+int shell_exit(int code)
 {
-	(void)arg;
-	exit(__exit_status__);
+	if (get_shell_instance()->user_input)
+		free(get_shell_instance()->user_input);
+	if (get_shell_instance()->tokens)
+		free_all(get_shell_instance()->tokens);
+
+	exit(code);
 }
 
 /**
@@ -27,7 +36,7 @@ static int aexit(void *arg)
  * @arg: Path of the directory
  * Return: 1 if success or -1
  */
-static int cd(void *arg)
+static int cd(char *arg)
 {
 	char *buffer = NULL;
 
@@ -35,7 +44,7 @@ static int cd(void *arg)
 	{
 		buffer = getcwd(NULL, 0);
 		if (!buffer)
-			return (-1);
+			shell_exit(-1);
 
 		arg = buffer;
 	}
@@ -45,12 +54,11 @@ static int cd(void *arg)
 		if (buffer)
 			free(buffer);
 
-		return (-1);
+		shell_exit(-1);
 	}
 
 	if (buffer)
 		free(buffer);
-
 	return (1);
 }
 
@@ -59,10 +67,9 @@ static int cd(void *arg)
  * @arg: None
  * Return: 1
  */
-static int env(void *arg)
+static int env(char *arg)
 {
 	size_t i;
-
 	(void)arg;
 
 	for (i = 0; __environ[i]; i++)
@@ -72,24 +79,26 @@ static int env(void *arg)
 }
 
 /**
- * get_builtins_command - Get builtins function if exists
+ * get_builtin_command - Get builtins function if exists
  * @tokens: A tokens list include builtins function name and optional arguments
  * Return: 0 if builtins function not found or 1/-1
  */
-int get_builtins_command(char **tokens)
+int get_builtin_command(char **tokens)
 {
-	int i = 0;
+	int i;
 
-	static struct Command buitlins[] = {
-		{"exit", aexit},
+	BuiltinCommand_t builtins[] = {
 		{"env", env},
 		{"cd", cd},
 		{NULL, NULL},
 	};
 
-	for (; buitlins[i].execute; i++)
-		if (strcmp(buitlins[i].name, tokens[0]) == 0)
-			return (buitlins[i].execute(tokens[1]));
+	if (strcmp(tokens[0], "exit") == 0)
+		shell_exit(shell_instance.exit_code);
+
+	for (i = 0; builtins[i].name != NULL; i++)
+		if (strcmp(builtins[i].name, tokens[0]) == 0)
+			return (builtins[i].execute(tokens[1]));
 
 	return (0);
 }

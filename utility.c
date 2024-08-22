@@ -16,34 +16,33 @@ void free_all(char **array)
 /**
  * make_tokens - Split string with delimiter
  * @input: A string to split
- * @delimiter: Delimiter to split string
  * Return: A array to contains tokens of the string with split the delimiter
  */
-char **make_tokens(char *input, const char *delimiter)
+char **make_tokens(char *input)
 {
 	size_t j = 0, stringSize = 0, tokensLen = 0;
 	char **tokens, *token, *ptr;
 
-	if (!input || !delimiter)
-		return (NULL);
+	if (!input)
+		exit(EXIT_FAILURE);
 
 	for (ptr = input; *ptr; ptr++)
-		if (*ptr == delimiter[0])
+		if (*ptr == ' ')
 			tokensLen++;
 
 	tokens = (char **)malloc((tokensLen + 2) * sizeof(void *));
 	if (!tokens)
-		return (NULL);
+		shell_exit(-1);
 
-	for (token = strtok(input, delimiter); token;
-		 token = strtok(NULL, delimiter))
+	for (token = strtok(input, " \n"); token;
+		 token = strtok(NULL, " \n"))
 	{
 		stringSize = strlen(token) + 1;
 		tokens[j] = (char *)malloc(stringSize * sizeof(char));
 		if (!tokens[j])
 		{
 			free_all(tokens);
-			return (NULL);
+			shell_exit(-1);
 		}
 
 		strcpy(tokens[j], token);

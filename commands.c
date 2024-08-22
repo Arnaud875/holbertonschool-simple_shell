@@ -41,33 +41,31 @@ static int run_process_command(const char *executable_path, char **tokens)
 int execute_command(const char *file_name, char **tokens)
 {
 	int status;
-	char *executable_path;
+	char *executable_path, *temp;
 
 	if (!tokens[0])
 		return (-1);
 
 	executable_path = strdup(tokens[0]);
-	status = get_builtins_command(tokens);
-
-	if (status)
-		return (0);
-
-	if (status == -1)
-		exit(EXIT_FAILURE);
 
 	if (access(executable_path, F_OK) != 0)
-		executable_path = get_executable_path(executable_path);
+	{
+		temp = get_executable_path(executable_path);
+		free(executable_path);
+		executable_path = temp;
+	}
 
 	if (!executable_path)
 	{
 		fprintf(stderr, "%s: No such file or directory\n", file_name);
 		free(executable_path);
+
+		get_shell_instance()->exit_code = 127;
 		return (-1);
 	}
 
 	status = run_process_command(executable_path, tokens);
-
-	set_exit_status(status);
+	get_shell_instance()->exit_code = status;
 	free(executable_path);
 
 	return (status);

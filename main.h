@@ -10,25 +10,41 @@
 #include <sys/wait.h>
 
 /**
- * struct Command - A structure of builtins functions
+ * struct BuiltinCommand - A structure of builtins functions
  * @name: Name of builtins function
  * @execute: A pointer to builtins function
  */
-struct Command
+typedef struct BuiltinCommand
 {
 	char *name;
-	int (*execute)(void *params);
-};
+	int (*execute)(char *arg);
+} BuiltinCommand_t;
 
-char *input(const char *text);
+/**
+ * struct Shell - A structure of shell
+ * @user_input: A buffer to stock stdin string
+ * @tokens: Split user_input with delimiter
+ * @exit_code: Exit code of shell
+ * @is_interactive: If is interactive mode or no-interactive mode
+ */
+typedef struct Shell
+{
+	char *user_input;
+	char **tokens;
+	int exit_code;
+	int is_interactive;
+} Shell_t;
+
+char *input();
 char *get_executable_path(char *executable);
 
-char **make_tokens(char *input, const char *delimiter);
+char **make_tokens(char *input);
 void free_all(char **array);
 
 int execute_command(const char *file_name, char **tokens);
 
-void set_exit_status(int code);
-int get_builtins_command(char **token);
+Shell_t *get_shell_instance(void);
+int shell_exit(int code);
+int get_builtin_command(char **token);
 
 #endif

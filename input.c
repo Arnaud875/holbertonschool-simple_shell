@@ -2,22 +2,16 @@
 
 /**
  * input - Read a line of text from standard input.
- * @text: A prompt string to display before
- * reading input. If NULL, no prompt is displayed.
- *
  * Return: A pointer to allocated buffer or NULL
  */
-char *input(const char *text)
+char *input()
 {
 	char *buffer = NULL;
 	size_t bufferLen = 0;
 
-	if (!text)
-		return (NULL);
-
-	if (isatty(0))
+	if (get_shell_instance()->is_interactive)
 	{
-		printf("%s ", text);
+		printf("$ ");
 		fflush(stdout);
 	}
 
@@ -25,7 +19,11 @@ char *input(const char *text)
 	{
 		if (buffer)
 			free(buffer);
-		return (NULL);
+
+		if (!get_shell_instance()->is_interactive)
+			exit(get_shell_instance()->exit_code);
+
+		exit(EXIT_FAILURE);
 	}
 
 	return (buffer);
