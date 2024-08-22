@@ -73,7 +73,7 @@ int execute_command(char **tokens)
 					get_shell_instance()->file_name);
 		else
 			fprintf(stderr, "%s: 1: %s: not found\n",
-					get_shell_instance()->file_name, executable_path);
+					get_shell_instance()->file_name, tokens[0]);
 
 		free(executable_path);
 		get_shell_instance()->exit_code = 127;
