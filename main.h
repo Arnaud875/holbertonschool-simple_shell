@@ -37,6 +37,7 @@ typedef struct Shell
 	int is_interactive;
 } Shell_t;
 
+int trim(char *text);
 char *input();
 char *get_executable_path(char *executable);
 

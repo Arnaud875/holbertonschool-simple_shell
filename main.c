@@ -26,7 +26,8 @@ int main(int argc, char **argv)
 		if (argc == 1)
 		{
 			get_shell_instance()->user_input = input();
-			if (*get_shell_instance()->user_input == '\n')
+			if (*get_shell_instance()->user_input == '\n' ||
+				trim(get_shell_instance()->user_input) == 0)
 			{
 				free(get_shell_instance()->user_input);
 				continue;

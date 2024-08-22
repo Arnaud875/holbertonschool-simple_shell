@@ -23,8 +23,26 @@ char *input()
 		if (!get_shell_instance()->is_interactive)
 			exit(get_shell_instance()->exit_code);
 
-		exit(EXIT_FAILURE);
+		exit(get_shell_instance()->exit_code);
 	}
 
 	return (buffer);
+}
+
+/**
+ * trim - test
+ * @text: ne
+ * Return: oui
+ */
+int trim(char *text)
+{
+	while (*text)
+	{
+		if (*text == ' ' || *text == '\n')
+			text++;
+		else
+			return (1);
+	}
+
+	return (0);
 }
