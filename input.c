@@ -24,7 +24,7 @@ char *input()
 			exit(get_shell_instance()->exit_code);
 
 		if (feof(stdin))
-			exit(0);
+			exit(get_shell_instance()->exit_code);
 
 		exit(EXIT_FAILURE);
 	}
