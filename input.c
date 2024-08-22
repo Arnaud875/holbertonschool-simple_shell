@@ -21,7 +21,7 @@ char *input()
 			free(buffer);
 
 		if (feof(stdin))
-			exit(get_shell_instance()->exit_code);
+			exit(0);
 
 		if (!get_shell_instance()->is_interactive)
 			exit(get_shell_instance()->exit_code);
