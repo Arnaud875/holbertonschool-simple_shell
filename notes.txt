@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 - Create structure of shell
 - Create cd command to change directory of parent
 - Check exit code of all error
