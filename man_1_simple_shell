@@ -1,0 +1,47 @@
+.TH HOLBERTONSCHOOL-SIMPLE-shell 1 "July 2024" "Version 1.0" "holbertonschool-simple_shell"
+.SH NAME
+simple_shell - a simple command interpreter written in C
+
+.SH SYNOPSIS
+**simple_shell** [**command** [**arguments**]]
+
+.SH DESCRIPTION
+**simple_shell** is a minimalist command interpreter written in C. It can execute system commands, handle built-in commands (`cd`, `env`, `exit`), and operate in both interactive and non-interactive modes. The shell creates a child process for each external command executed.
+
+.SH COMMANDS
+
+.SH Built-in Commands
+The following built-in commands are supported by **simple_shell**:
+
+- **cd [directory]**
+  - Changes the current working directory to *directory*. If *directory* is not specified, it changes to the current working directory (`$PWD`). Returns 1 on success, and 2 on failure.
+
+- **env**
+  - Prints all current environment variables. Returns 1.
+
+- **exit [exit_code]**
+  - Exits the shell with the specified *exit_code*. If no code is provided, the shell exits with the last exit code of an executed command. On failure, an error message is displayed.
+
+.SH Executing External Commands
+The shell can execute external commands by using their absolute path or by searching for them in the directories specified by the **PATH** environment variable. If the command is not found, an error message is displayed, and the exit code is set to 127.
+
+.SH OPTIONS
+The shell can be used with the following options:
+
+- **command [arguments]**
+  - Executes the specified command with the given arguments in non-interactive mode, then exits the shell with the exit code of the executed command.
+
+.SH USAGE
+
+.SH Interactive Mode
+When the shell is launched without arguments, it operates in interactive mode. A command prompt (`$`) is displayed, allowing the user to enter commands one at a time.
+
+.SH Non-interactive Mode
+When arguments are passed to the shell, it operates in non-interactive mode. It executes the specified command with its arguments, then exits.
+
+.SH Signal Handling
+- **Ctrl+C** (SIGINT): The shell intercepts this signal to prevent interruption. Instead of terminating, the shell ignores the signal and continues running.
+
+.SH Authors
+Arnaud Nickles (Arnnaud875)
+Nour Chaouch (NChaouch)
